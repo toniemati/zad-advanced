@@ -38,23 +38,27 @@
     </v-app-bar>
 
     <v-main>
-      <HelloWorld/>
+      <Form class="form" />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import Form from './components/Form.vue';
 
 export default {
   name: 'App',
-
-  components: {
-    HelloWorld,
-  },
-
+  components: { Form },
   data: () => ({
     //
   }),
 };
 </script>
+
+<style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+</style>
