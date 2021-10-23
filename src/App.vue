@@ -38,20 +38,38 @@
     </v-app-bar>
 
     <v-main>
-      <Form class="form" />
+      <Form />
+      <Table :contacts="contacts" @editContact="editContact" @deleteContact="deleteContact" />
     </v-main>
   </v-app>
 </template>
 
 <script>
+import axios from 'axios';
 import Form from './components/Form.vue';
+import Table from './components/Table.vue';
 
 export default {
   name: 'App',
-  components: { Form },
+  components: { Form, Table },
   data: () => ({
-    //
+    contacts: []
   }),
+  created: function() {
+    this.fetchContacts();
+  },
+  methods: {
+    async fetchContacts() {
+      const { data } = await axios.get('http://test01.varid.pl:4080/api/contacts');
+      this.contacts = data;
+    },
+    editContact(contact) {
+      console.log('editing from app:', contact);
+    },
+    async deleteContact(contact) {
+      console.log('deleting from app:', contact);
+    }
+  }
 };
 </script>
 

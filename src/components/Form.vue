@@ -61,9 +61,6 @@
       required
     />
 
-
-
-
     <!-- buttons -->
     <v-btn
       color="green white--text"
@@ -143,10 +140,4 @@ export default {
 </script>
 
 <style scoped>
-.form {
-  padding: 1rem;
-  margin: 1rem;
-  border: 1px solid black;
-  border-radius: 20px;
-}
 </style>
