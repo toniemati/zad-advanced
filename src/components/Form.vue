@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="px-4 py-4 elevation-5">
     <v-form
       class="form"
       ref="form"
@@ -63,12 +63,48 @@
       />
 
       <!-- buttons -->
-      <v-btn
+      <div class="text-center">
+        <v-btn-toggle
+          shaped
+        >
+          <v-btn
+            class="green white--text font-weight-bold"
+            :disabled="addButton"
+            @click="addContact"
+          >
+            Add
+          </v-btn>
+
+          <v-btn
+            class="orange white--text font-weight-bold"
+            @click="clear"
+          >
+            Clear
+          </v-btn>
+
+          <v-btn
+            class="blue white--text font-weight-bold"
+            :disabled="!contact.id"
+            @click="modifyContact"
+          >
+            Modify
+          </v-btn>
+        </v-btn-toggle>
+      </div>
+
+      <!-- <v-btn
         class="green white--text"
         :disabled="addButton"
         @click="addContact"
       >
         Add new item
+      </v-btn>
+
+      <v-btn
+        class="yellow white--text"
+        @click="clear"
+      >
+        Clear Form
       </v-btn>
 
       <v-btn 
@@ -77,24 +113,20 @@
         @click="modifyContact"
       >
         Modify item
-      </v-btn>
+      </v-btn> -->
     </v-form>
 
-    <template>
-      <v-toolbar flat>
-        <v-dialog v-model="dialogModify" max-width="600">
-          <v-card>
-            <v-card-title v-if="contact.id" class="text-h5 justify-center text-center">
-              Are you sure you want to modify {{ contact.name }} {{ contact.last_name }}?
-            </v-card-title>
-            <v-card-actions class="justify-center">
-              <v-btn color="red darken-1" text @click="closeModify">Cancel</v-btn>
-              <v-btn color="green" text @click="modifyContactConfirm">Yes</v-btn>
-            </v-card-actions>
-          </v-card> 
-        </v-dialog>
-      </v-toolbar>
-    </template>
+    <v-dialog v-model="dialogModify" max-width="600">
+      <v-card>
+        <v-card-title v-if="contact.id" class="text-h5 justify-center text-center">
+          Are you sure you want to modify {{ contact.name }} {{ contact.last_name }}?
+        </v-card-title>
+        <v-card-actions class="justify-center">
+          <v-btn color="red darken-1" text @click="closeModify">Cancel</v-btn>
+          <v-btn color="green" text @click="modifyContactConfirm">Yes</v-btn>
+        </v-card-actions>
+      </v-card> 
+    </v-dialog>
   </v-card>
 </template>
 
@@ -155,6 +187,10 @@ export default {
     },
   },
   methods: {
+    clear() {
+      this.$refs.form.reset();
+      this.contact = {};
+    },
     validate () {
       this.$refs.form.validate()
     },

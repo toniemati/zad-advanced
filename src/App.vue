@@ -2,44 +2,46 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
+      color="orange"
       dark
     >
       <div class="d-flex align-center">
         <v-img
-          alt="Vuetify Logo"
+          alt="Crud logo"
           class="shrink mr-2"
           contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Contacts_%28iOS%29.png"
           transition="scale-transition"
-          width="40"
+          width="50"
         />
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+        <div class="ml-2 font-weight-bold headline ">
+          My contacts
+        </div>
       </div>
 
       <v-spacer></v-spacer>
 
       <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        href="https://github.com/toniemati"
         target="_blank"
         text
       >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
+        <span class="mr-2">toniemati</span>
+        <v-icon>mdi-account</v-icon>
       </v-btn>
     </v-app-bar>
 
     <v-main>
-      <Form :currentContact="currentContact" @addContact="addContact" @modifyContact="modifyContact" />
-      <Table :contacts="contacts" @contactChange="contactChange" @deleteContact="deleteContact" />
+      <v-row class="mx-2 my-2">
+        <v-col cols="12" lg="3">
+          <Form :currentContact="currentContact" @addContact="addContact" @modifyContact="modifyContact" />
+        </v-col>
+
+        <v-col cols="12" lg="9">
+          <Table :contacts="contacts" @contactChange="contactChange" @deleteContact="deleteContact" />
+        </v-col>
+      </v-row>
     </v-main>
   </v-app>
 </template>
@@ -65,7 +67,7 @@ export default {
       this.contacts = data;
     },
     contactChange(contact) {
-      this.currentContact = contact;
+      this.currentContact = { ...contact };
       window.scrollTo(0, 0);
     },
     addContact(contact) {
@@ -84,10 +86,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
 }
 </style>
