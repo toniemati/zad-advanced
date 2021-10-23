@@ -91,32 +91,9 @@
           </v-btn>
         </v-btn-toggle>
       </div>
-
-      <!-- <v-btn
-        class="green white--text"
-        :disabled="addButton"
-        @click="addContact"
-      >
-        Add new item
-      </v-btn>
-
-      <v-btn
-        class="yellow white--text"
-        @click="clear"
-      >
-        Clear Form
-      </v-btn>
-
-      <v-btn 
-        class="blue white--text"
-        :disabled="!contact.id"
-        @click="modifyContact"
-      >
-        Modify item
-      </v-btn> -->
     </v-form>
 
-    <v-dialog v-model="dialogModify" max-width="600">
+    <v-dialog v-model="dialogModify" max-width="fit-content">
       <v-card>
         <v-card-title v-if="contact.id" class="text-h5 justify-center text-center">
           Are you sure you want to modify {{ contact.name }} {{ contact.last_name }}?
@@ -137,7 +114,6 @@ export default {
     dialogModify: false,
     formValid: false,
     contact: {
-      id: null,
       name: '',
       last_name: '',
       phone_number: '',
@@ -201,6 +177,7 @@ export default {
         if (!this.formValid) return;
 
         this.$emit('addContact', this.contact);
+        this.clear();
       }, 100);
     },
     closeModify() {

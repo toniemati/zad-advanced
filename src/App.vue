@@ -43,6 +43,26 @@
         </v-col>
       </v-row>
     </v-main>
+
+    <v-dialog v-model="dialogMessage" max-width="fit-content">
+      <v-card :color="message.color" dark>
+        <v-card-title class="justify-space-between">
+          <div class="d-flex align-self-center">
+            <v-icon left>{{ message.icon }}</v-icon>
+            <span>{{ message.content }}</span>
+          </div>
+
+          <v-btn 
+            @click="dialogMessage = false" 
+            dark 
+            text
+            class="ml-3"
+          >
+            Ok
+          </v-btn>
+        </v-card-title>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -55,6 +75,12 @@ export default {
   name: 'App',
   components: { Form, Table },
   data: () => ({
+    dialogMessage: false,
+    message: {
+      icon: 'mdi-delete',
+      color: 'orange darken-4',
+      content: 'There was some problems with adding contact, try again later.'
+    },
     contacts: [],
     currentContact: null,
   }),
@@ -70,17 +96,62 @@ export default {
       this.currentContact = { ...contact };
       window.scrollTo(0, 0);
     },
-    addContact(contact) {
-      //todo post request
-      console.log('adding from app', contact);
+    async addContact(contact) {
+      const { data: { message }, status } = await axios.post('http://test01.varid.pl:4080/api/contact', contact);
+
+      if (status === 200) {
+        this.message = {
+          icon: 'mdi-plus-thick',
+          color: 'green',
+          content: message
+        }
+      } else {
+        this.message = {
+          icon: 'mdi-alert',
+          color: 'red',
+          content: 'There was some problems with adding contact, try again later.'
+        }
+      }
+      this.dialogMessage = true;
+      this.fetchContacts();
     },
-    modifyContact(contact) {
-      //todo put request
-      console.log('editing from app', contact);
+    async modifyContact(contact) {
+      const { data: { message }, status } = await axios.put(`http://test01.varid.pl:4080/api/contact/${contact.id}`, contact);
+
+      if (status === 200) {
+        this.message = {
+          icon: 'mdi-pencil',
+          color: 'orange',
+          content: message
+        }
+      } else {
+        this.message = {
+          icon: 'mdi-alert',
+          color: 'red',
+          content: 'There was some problems with updating contact, try again later.'
+        }
+      }
+      this.dialogMessage = true;
+      this.fetchContacts();
     },
-    deleteContact(contact) {
-      //todo delete request
-      console.log('delete from app', contact);
+    async deleteContact(contact) {
+      const { data: { message }, status } = await axios.delete(`http://test01.varid.pl:4080/api/contact/delete/${contact.id}`);
+
+      if (status === 200) {
+        this.message = {
+          icon: 'mdi-delete',
+          color: 'orange darken-4',
+          content: message
+        }
+      } else {
+        this.message = {
+          icon: 'mdi-alert',
+          color: 'red',
+          content: 'There was some problems with updating contact, try again later.'
+        }
+      }
+      this.dialogMessage = true;
+      this.fetchContacts();
     }
   }
 };

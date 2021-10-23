@@ -12,7 +12,7 @@
       :search="search"
     >
       <template v-slot:top>
-        <v-dialog v-model="dialogDelete" max-width="600">
+        <v-dialog v-model="dialogDelete" max-width="fit-content">
           <v-card>
             <v-card-title v-if="toDelete" class="text-h5 justify-center text-center">
               Are you sure you want to delete {{ toDelete.name }} {{ toDelete.last_name }}?
