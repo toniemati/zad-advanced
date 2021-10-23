@@ -38,8 +38,8 @@
     </v-app-bar>
 
     <v-main>
-      <Form />
-      <Table :contacts="contacts" @editContact="editContact" @deleteContact="deleteContact" />
+      <Form :currentContact="currentContact" @addContact="addContact" @modifyContact="modifyContact" />
+      <Table :contacts="contacts" @contactChange="contactChange" @deleteContact="deleteContact" />
     </v-main>
   </v-app>
 </template>
@@ -53,7 +53,8 @@ export default {
   name: 'App',
   components: { Form, Table },
   data: () => ({
-    contacts: []
+    contacts: [],
+    currentContact: null,
   }),
   created: function() {
     this.fetchContacts();
@@ -63,11 +64,21 @@ export default {
       const { data } = await axios.get('http://test01.varid.pl:4080/api/contacts');
       this.contacts = data;
     },
-    editContact(contact) {
-      console.log('editing from app:', contact);
+    contactChange(contact) {
+      this.currentContact = contact;
+      window.scrollTo(0, 0);
     },
-    async deleteContact(contact) {
-      console.log('deleting from app:', contact);
+    addContact(contact) {
+      //todo post request
+      console.log('adding from app', contact);
+    },
+    modifyContact(contact) {
+      //todo put request
+      console.log('editing from app', contact);
+    },
+    deleteContact(contact) {
+      //todo delete request
+      console.log('delete from app', contact);
     }
   }
 };

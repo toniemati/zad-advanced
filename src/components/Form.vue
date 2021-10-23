@@ -1,97 +1,119 @@
 <template>
-  <v-form
-    class="form"
-    ref="form"
-    v-model="formValid"
-    lazy-validation
-  >
-    <!-- name -->
-    <v-text-field
-      v-model="name"
-      :rules="rules.name"
-      label="Name"
-      required
-    />
-
-    <!-- last_name -->
-    <v-text-field
-      v-model="last_name"
-      :rules="rules.lastName"
-      label="Last Name"
-      required
-    />
-
-    <!-- phone_number -->
-    <v-text-field
-      v-model="phone_number"
-      :rules="rules.phoneNumber"
-      label="Phone Number"
-      required
-    />
-
-    <!-- email -->
-    <v-text-field
-      v-model="email"
-      :rules="rules.email"
-      label="Email"
-      required
-    />
-
-    <!-- country -->
-    <v-text-field
-      v-model="country"
-      :rules="rules.country"
-      label="Country"
-      required
-    />
-
-    <!-- city -->
-    <v-text-field
-      v-model="city"
-      :rules="rules.city"
-      label="City"
-      required
-    />
-
-    <!-- address -->
-    <v-text-field
-      v-model="address"
-      :rules="rules.address"
-      label="Address"
-      required
-    />
-
-    <!-- buttons -->
-    <v-btn
-      color="green white--text"
-      :disabled="!formValid"
-      @click="addContact"
+  <v-card>
+    <v-form
+      class="form"
+      ref="form"
+      v-model="formValid"
+      lazy-validation
     >
-      Add new item
-    </v-btn>
+      <!-- name -->
+      <v-text-field
+        v-model="contact.name"
+        :rules="rules.name"
+        label="Name"
+        required
+      />
 
-    <v-btn 
-      dark
-      color="blue"
-      @click="modifyContact"
-    >
-      Modify item
-    </v-btn>
-  </v-form>
+      <!-- last_name -->
+      <v-text-field
+        v-model="contact.last_name"
+        :rules="rules.lastName"
+        label="Last Name"
+        required
+      />
+
+      <!-- phone_number -->
+      <v-text-field
+        v-model="contact.phone_number"
+        :rules="rules.phoneNumber"
+        label="Phone Number"
+        required
+      />
+
+      <!-- email -->
+      <v-text-field
+        v-model="contact.email"
+        :rules="rules.email"
+        label="Email"
+        required
+      />
+
+      <!-- country -->
+      <v-text-field
+        v-model="contact.country"
+        :rules="rules.country"
+        label="Country"
+        required
+      />
+
+      <!-- city -->
+      <v-text-field
+        v-model="contact.city"
+        :rules="rules.city"
+        label="City"
+        required
+      />
+
+      <!-- address -->
+      <v-text-field
+        v-model="contact.address"
+        :rules="rules.address"
+        label="Address"
+        required
+      />
+
+      <!-- buttons -->
+      <v-btn
+        class="green white--text"
+        :disabled="addButton"
+        @click="addContact"
+      >
+        Add new item
+      </v-btn>
+
+      <v-btn 
+        class="blue white--text"
+        :disabled="!contact.id"
+        @click="modifyContact"
+      >
+        Modify item
+      </v-btn>
+    </v-form>
+
+    <template>
+      <v-toolbar flat>
+        <v-dialog v-model="dialogModify" max-width="600">
+          <v-card>
+            <v-card-title v-if="contact.id" class="text-h5 justify-center text-center">
+              Are you sure you want to modify {{ contact.name }} {{ contact.last_name }}?
+            </v-card-title>
+            <v-card-actions class="justify-center">
+              <v-btn color="red darken-1" text @click="closeModify">Cancel</v-btn>
+              <v-btn color="green" text @click="modifyContactConfirm">Yes</v-btn>
+            </v-card-actions>
+          </v-card> 
+        </v-dialog>
+      </v-toolbar>
+    </template>
+  </v-card>
 </template>
 
 <script>
 export default {
   name: 'Form',
   data: () => ({
-    formValid: true,
-    name: '',
-    last_name: '',
-    phone_number: '',
-    email: '',
-    country: '',
-    city: '',
-    address: '',
+    dialogModify: false,
+    formValid: false,
+    contact: {
+      id: null,
+      name: '',
+      last_name: '',
+      phone_number: '',
+      email: '',
+      country: '',
+      city: '',
+      address: '',
+    },
     rules: {
       name: [
         v => !!v || 'Name is required',
@@ -103,8 +125,8 @@ export default {
       ],
       phoneNumber: [
         v => !!v || 'Phone Number is required',
-        v => /\(?([0-9]+)\)?([ .-]?)([0-9]{3})\2([0-9]+)/.test(v) || 'Phone Number must be valid',
-        v => (v && v.length <= 16) || 'Phone Number must be max 16 characters length'
+        v => /(\d|\(|\)|\+|\s|\-|\.)+/.test(v) || 'Phone Number must be valid',
+        v => (v && v.length <= 17) || 'Phone Number must be max 17 characters length'
       ],
       email: [
         v => !!v || 'E-mail is required',
@@ -121,6 +143,17 @@ export default {
       ],
     }
   }),
+  computed: {
+    addButton: function() {
+      return (!this.formValid || this.contact.id) ? true : false;
+    }
+  },
+  props: ['currentContact'],
+  watch: {
+    currentContact: function(val) {
+      this.contact = val;
+    },
+  },
   methods: {
     validate () {
       this.$refs.form.validate()
@@ -129,11 +162,24 @@ export default {
       this.validate();
 
       setTimeout(() => {
-        console.log(this.formValid);
-      }, 500);
+        if (!this.formValid) return;
+
+        this.$emit('addContact', this.contact);
+      }, 100);
+    },
+    closeModify() {
+      this.dialogModify = false;
     },
     modifyContact() {
-      console.log('modify');
+      if (!this.contact.id) return;
+
+      this.dialogModify = true;
+    },
+    modifyContactConfirm() {
+      if (!this.contact.id) return;
+
+      this.$emit('modifyContact', this.contact);
+      this.closeModify();
     }
   }
 };
