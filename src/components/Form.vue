@@ -1,12 +1,10 @@
 <template>
-  <v-card class="px-4 py-4 elevation-5">
+  <v-card class="pa-6 elevation-5" @keypress.13="handleSubmit">
     <v-form
-      class="form"
       ref="form"
       v-model="formValid"
       lazy-validation
     >
-      <!-- name -->
       <v-text-field
         v-model="contact.name"
         :rules="rules.name"
@@ -14,7 +12,6 @@
         required
       />
 
-      <!-- last_name -->
       <v-text-field
         v-model="contact.last_name"
         :rules="rules.lastName"
@@ -22,7 +19,6 @@
         required
       />
 
-      <!-- phone_number -->
       <v-text-field
         v-model="contact.phone_number"
         :rules="rules.phoneNumber"
@@ -30,7 +26,6 @@
         required
       />
 
-      <!-- email -->
       <v-text-field
         v-model="contact.email"
         :rules="rules.email"
@@ -38,7 +33,6 @@
         required
       />
 
-      <!-- country -->
       <v-text-field
         v-model="contact.country"
         :rules="rules.country"
@@ -46,7 +40,6 @@
         required
       />
 
-      <!-- city -->
       <v-text-field
         v-model="contact.city"
         :rules="rules.city"
@@ -54,7 +47,6 @@
         required
       />
 
-      <!-- address -->
       <v-text-field
         v-model="contact.address"
         :rules="rules.address"
@@ -62,14 +54,13 @@
         required
       />
 
-      <!-- buttons -->
       <div class="text-center">
         <v-btn-toggle
           shaped
         >
           <v-btn
             class="green white--text font-weight-bold"
-            :disabled="addButton"
+            :disabled="disabledAddButton"
             @click="addContact"
           >
             Add
@@ -77,14 +68,14 @@
 
           <v-btn
             class="orange white--text font-weight-bold"
-            @click="clear"
+            @click="reset"
           >
             Clear
           </v-btn>
 
           <v-btn
             class="blue white--text font-weight-bold"
-            :disabled="!contact.id"
+            :disabled="disabledModifyButton"
             @click="modifyContact"
           >
             Modify
@@ -94,13 +85,13 @@
     </v-form>
 
     <v-dialog v-model="dialogModify" max-width="fit-content">
-      <v-card>
+      <v-card class="pa-6">
         <v-card-title v-if="contact.id" class="text-h5 justify-center text-center">
           Are you sure you want to modify {{ contact.name }} {{ contact.last_name }}?
         </v-card-title>
         <v-card-actions class="justify-center">
-          <v-btn color="red darken-1" text @click="closeModify">Cancel</v-btn>
-          <v-btn color="green" text @click="modifyContactConfirm">Yes</v-btn>
+          <v-btn rounded color="blue darken-1 white--text" @click="closeModify">No</v-btn>
+          <v-btn rounded color="green darken-1 white--text" @click="modifyContactConfirm">Yes</v-btn>
         </v-card-actions>
       </v-card> 
     </v-dialog>
@@ -152,23 +143,31 @@ export default {
     }
   }),
   computed: {
-    addButton: function() {
+    disabledAddButton: function() {
       return (!this.formValid || this.contact.id) ? true : false;
+    },
+    disabledModifyButton: function() {
+      return (!this.contact.id || !this.formValid) ? true : false;
     }
   },
   props: ['currentContact'],
   watch: {
     currentContact: function(val) {
       this.contact = val;
+
+      if (!val.name) this.reset();
     },
   },
   methods: {
-    clear() {
+    reset() {
       this.$refs.form.reset();
-      this.contact = {};
     },
     validate () {
       this.$refs.form.validate()
+    },
+    handleSubmit() {
+      if (this.contact.id) this.modifyContact();
+      else this.addContact();
     },
     addContact() {
       this.validate();
@@ -177,7 +176,6 @@ export default {
         if (!this.formValid) return;
 
         this.$emit('addContact', this.contact);
-        this.clear();
       }, 100);
     },
     closeModify() {
@@ -197,6 +195,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-</style>

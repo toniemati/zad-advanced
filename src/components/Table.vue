@@ -1,5 +1,5 @@
 <template>
-  <v-card class="px-4 py-4 elevation-5">
+  <v-card class="pa-6 elevation-5">
     <v-text-field
       v-model="search"
       label="Search"
@@ -13,13 +13,13 @@
     >
       <template v-slot:top>
         <v-dialog v-model="dialogDelete" max-width="fit-content">
-          <v-card>
+          <v-card class="pa-6">
             <v-card-title v-if="toDelete" class="text-h5 justify-center text-center">
               Are you sure you want to delete {{ toDelete.name }} {{ toDelete.last_name }}?
             </v-card-title>
             <v-card-actions class="justify-center">
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="red darken-1" text @click="deleteContactConfirm">Yes</v-btn>
+              <v-btn rounded color="blue darken-1 white--text" @click="closeDelete">No</v-btn>
+              <v-btn rounded color="red darken-1 white--text" @click="deleteContactConfirm">Yes</v-btn>
             </v-card-actions>
           </v-card> 
         </v-dialog>
@@ -75,7 +75,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

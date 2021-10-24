@@ -23,11 +23,10 @@
       <v-spacer></v-spacer>
 
       <v-btn
-        href="https://github.com/toniemati"
-        target="_blank"
+        href="#"
         text
       >
-        <span class="mr-2">toniemati</span>
+        <span class="mr-2">Guest</span>
         <v-icon>mdi-account</v-icon>
       </v-btn>
     </v-app-bar>
@@ -94,7 +93,12 @@ export default {
     },
     contactChange(contact) {
       this.currentContact = { ...contact };
-      window.scrollTo(0, 0);
+      
+      window.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
     },
     async addContact(contact) {
       const { data: { message }, status } = await axios.post('http://test01.varid.pl:4080/api/contact', contact);
@@ -114,6 +118,7 @@ export default {
       }
       this.dialogMessage = true;
       this.fetchContacts();
+      this.currentContact = {};
     },
     async modifyContact(contact) {
       const { data: { message }, status } = await axios.put(`http://test01.varid.pl:4080/api/contact/${contact.id}`, contact);
@@ -133,6 +138,7 @@ export default {
       }
       this.dialogMessage = true;
       this.fetchContacts();
+      this.currentContact = {};
     },
     async deleteContact(contact) {
       const { data: { message }, status } = await axios.delete(`http://test01.varid.pl:4080/api/contact/delete/${contact.id}`);
@@ -152,6 +158,7 @@ export default {
       }
       this.dialogMessage = true;
       this.fetchContacts();
+      this.currentContact = {};
     }
   }
 };
